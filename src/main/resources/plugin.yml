@@ -1,0 +1,22 @@
+name: RyuZUPacketOptimizer
+version: '${project.version}'
+main: packetoptimizeplugin.packetoptimizeplugin.RyuZUPacketOptimizer
+api-version: 1.16
+description: パケットを最適化して送るPluginです
+depend:
+  - ProtocolLib
+
+commands:
+  rpo:
+    usage:  /rpo
+    description: RyuZUPacketOptimizerの様々な設定ができる
+
+permissions:
+  rpo.player:
+    default: true
+  rpo.op:
+    default: op
+  rpo.*:
+    children:
+      rpo.op: true
+      rpo.player: true
