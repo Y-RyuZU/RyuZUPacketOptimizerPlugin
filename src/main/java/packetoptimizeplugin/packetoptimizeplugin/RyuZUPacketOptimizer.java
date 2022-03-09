@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.comphenix.protocol.wrappers.WrappedParticle;
+import com.github.ryuzu.ryuzucommandgenerator.RyuZUCommandsGenerator;
 import com.sun.jmx.remote.internal.ArrayQueue;
 import io.netty.buffer.Unpooled;
 import org.bukkit.Bukkit;
@@ -39,11 +40,14 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
     public static HashMap<Player, Queue<ParticleBasePacket>> particleQueue = new HashMap<>();
     public static long limitcount;
     public static RyuZUPacketOptimizer plugin;
+    public static RyuZUCommandsGenerator generator;
 
     @Override
     public void onEnable() {
         plugin = this;
         listener = new PacketListener();
+        generator = new RyuZUCommandsGenerator(this, ChatColor.RED + "ぽまえ権限ないやろ");
+
         getServer().getMessenger().registerOutgoingPluginChannel(this, "ryuzupacketoptimizer:main");
         getServer().getMessenger().registerIncomingPluginChannel(this, "ryuzupacketoptimizer:main", listener);
         getServer().getPluginManager().registerEvents(listener, this);
@@ -92,7 +96,8 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 if (!hit) {
                                     packets.add(
                                             new ParticleForceColorPacket(id, r, g, b, scale
-                                                    , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))));
+                                                    , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z)))
+                                    );
                                 }
                             } else if (offx != 0 || offy != 0 || offz != 0) {
                                 for (ParticleBasePacket base : packets) {
@@ -107,7 +112,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleOffsetColorPacket(id, r, g, b, scale
+                                            new ParticleOffsetColorPacket(id, count, r, g, b, scale
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
                                     );
@@ -139,7 +144,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                     if (base.getClass().toString().equals(ParticleOffsetBlockPacket.class.toString())) {
                                         ParticleOffsetBlockPacket vec = (ParticleOffsetBlockPacket) base;
                                         if (vec.isSimilar(id, count, speed, blockid)) {
-                                            vec.addLocation(x, y, z);
+                                            vec.addLocation(x, y, z, offx, offy, offz);
                                             hit = true;
                                             break;
                                         }
@@ -366,7 +371,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                 List<ParticleCompressionPacket> compressionPackets = new ArrayList<>();
                 packet:
                 while (queue.size() > 0) {
-                    if(compressionPackets.size() == 0) compressionPackets.add(new ParticleCompressionPacket());
+                    if (compressionPackets.size() == 0) compressionPackets.add(new ParticleCompressionPacket());
                     for (ParticleCompressionPacket compacket : compressionPackets) {
                         if (compacket.ableAdd(queue.peek().encode().copy())) {
                             compacket.addPacket(queue.poll().encode().copy());

@@ -13,20 +13,23 @@ public class ParticleOffsetColorPacket extends ParticleColorPacket {
     protected List<Float> offx = new ArrayList<>();
     protected List<Float> offy = new ArrayList<>();
     protected List<Float> offz = new ArrayList<>();
+    protected int count;
 
-    public ParticleOffsetColorPacket(int type, float r, float g, float b, float scale) {
+    public ParticleOffsetColorPacket(int type,int count, float r, float g, float b, float scale) {
         super(type, r, b, g, scale);
+        this.count = count;
     }
 
-    public ParticleOffsetColorPacket(int type, float r, float g, float b, float scale, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {
+    public ParticleOffsetColorPacket(int type,int count, float r, float g, float b, float scale, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {
         super(type, r, g, b, scale, x, y, z);
+        this.count = count;
         this.offx = offx;
         this.offy = offy;
         this.offz = offz;
     }
 
     public boolean isSimilar(float r, float g, float b, float scale) {
-        return this.r == r && this.g == g && this.b == b && this.scale == scale && 25 + this.x.size() * 48 + 48 < 1024;
+        return this.count == count && this.r == r && this.g == g && this.b == b && this.scale == scale && 25 + this.x.size() * 48 + 48 < 1024;
     }
 
     @Override
@@ -34,6 +37,7 @@ public class ParticleOffsetColorPacket extends ParticleColorPacket {
         ByteBuf buf = Unpooled.buffer();
         buf.writeByte(ID);
         buf.writeInt(type);
+        buf.writeInt(count);
         buf.writeFloat(r);
         buf.writeFloat(g);
         buf.writeFloat(b);
@@ -58,6 +62,7 @@ public class ParticleOffsetColorPacket extends ParticleColorPacket {
         if (ID != ParticleOffsetColorPacket.ID) throw new UnsupportedOperationException();
 
         int type = buf.readInt();
+        int count = buf.readInt();
         float r = buf.readFloat();
         float g = buf.readFloat();
         float b = buf.readFloat();
@@ -77,7 +82,7 @@ public class ParticleOffsetColorPacket extends ParticleColorPacket {
             offy.add(buf.readFloat());
             offz.add(buf.readFloat());
         }
-        return new ParticleOffsetColorPacket(type, r, g, b, scale, x, y, z, offx, offy, offz);
+        return new ParticleOffsetColorPacket(type,count, r, g, b, scale, x, y, z, offx, offy, offz);
     }
 
     public void addVector(float x, float y, float z) {

@@ -14,7 +14,6 @@ public class ParticleVectorPacket extends ParticleBasePacket {
     protected List<Float> offy = new ArrayList<>();
     protected List<Float> offz = new ArrayList<>();
 
-
     public ParticleVectorPacket(int type, float speed) {
         super(type);
         this.speed = speed;
