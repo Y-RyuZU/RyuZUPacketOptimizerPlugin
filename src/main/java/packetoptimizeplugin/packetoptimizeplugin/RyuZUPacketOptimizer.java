@@ -8,19 +8,14 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.comphenix.protocol.wrappers.WrappedParticle;
-import com.github.ryuzu.ryuzucommandgenerator.RyuZUCommandsGenerator;
-import com.sun.jmx.remote.internal.ArrayQueue;
-import io.netty.buffer.Unpooled;
+import com.github.ryuzu.ryuzucommandsgenerator.RyuZUCommandsGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import packetoptimizeplugin.packetoptimizeplugin.Packets.CheckUsingModPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.*;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Force.ParticleForceColorPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Force.ParticleForcePacket;
@@ -28,10 +23,8 @@ import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Materia
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Material.ParticleFallingDustPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Material.ParticleItemPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Offset.*;
-import packetoptimizeplugin.packetoptimizeplugin.Packets.SetParticleDrawingRatePacket;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class RyuZUPacketOptimizer extends JavaPlugin {
@@ -46,11 +39,16 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         listener = new PacketListener();
+        Commands.implement();
         generator = new RyuZUCommandsGenerator(this, ChatColor.RED + "ぽまえ権限ないやろ");
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "ryuzupacketoptimizer:main");
         getServer().getMessenger().registerIncomingPluginChannel(this, "ryuzupacketoptimizer:main", listener);
         getServer().getPluginManager().registerEvents(listener, this);
+
+        for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+            RyuZUPacketOptimizer.sendPacket(p, new CheckUsingModPacket().encode().array());
+        }
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Server.WORLD_PARTICLES) {
             @Override
@@ -350,7 +348,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                     }
                     particleQueue.put(p, packets);
                     event.setCancelled(true);
-                } else if (limitcount > 400 && Math.random() >= 0.1) {
+                } else if (limitcount > 500 && Math.random() >= 0.3) {
                     event.setCancelled(true);
                 } else {
                     limitcount++;
@@ -365,9 +363,6 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
             for (Player p : particleQueue.keySet()) {
                 Queue<ParticleBasePacket> queue = particleQueue.get(p);
 
-                Queue<ParticleBasePacket> packetqueue = new ArrayDeque<>(queue.stream().filter(q -> q instanceof ParticleColorPacket || q instanceof ParticleVectorPacket).collect(Collectors.toList()));
-                queue.removeAll(packetqueue);
-
                 List<ParticleCompressionPacket> compressionPackets = new ArrayList<>();
                 packet:
                 while (queue.size() > 0) {
@@ -375,18 +370,14 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                     for (ParticleCompressionPacket compacket : compressionPackets) {
                         if (compacket.ableAdd(queue.peek().encode().copy())) {
                             compacket.addPacket(queue.poll().encode().copy());
-                            break packet;
+                            continue packet;
                         }
                     }
-                    compressionPackets.add(new ParticleCompressionPacket(Collections.singletonList(queue.poll().encode())));
+                    compressionPackets.add(new ParticleCompressionPacket(new ArrayList<>(Collections.singletonList(queue.poll().encode()))));
                 }
 
                 for (ParticleCompressionPacket compacket : compressionPackets) {
                     sendPacket(p, compacket.encode().array());
-                }
-
-                for (ParticleBasePacket packet : packetqueue) {
-                    sendParticlePacket(p, packet);
                 }
                 particleQueue.put(p, queue);
             }
@@ -398,98 +389,11 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
     }
 
-    public void sendParticlePacket(Player p, ParticleBasePacket packet) {
-        p.sendPluginMessage(this, "ryuzupacketoptimizer:main", packet.encode().array());
+    public static void sendParticlePacket(Player p, ParticleBasePacket packet) {
+        p.sendPluginMessage(plugin, "ryuzupacketoptimizer:main", packet.encode().array());
     }
 
-    public void sendPacket(Player p, byte[] packet) {
-        p.sendPluginMessage(this, "ryuzupacketoptimizer:main", packet);
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("rpo")) {
-            if (args.length <= 0) {
-                sender.sendMessage(ChatColor.RED + "/" + label + " [list/particledrawingrate/remove]");
-                return true;
-            }
-            if (args[0].equals("list") || args[0].equals("l")) {
-                if (!sender.hasPermission("rpo.op")) {
-                    sender.sendMessage(ChatColor.RED + "ぽまえ権限ないやろ");
-                    return true;
-                }
-                sender.sendMessage(ChatColor.GREEN + "使用者一覧:");
-                for (Player p : usingPlayers.keySet()) {
-                    sender.sendMessage(ChatColor.GREEN + p.getName() + ": " + usingPlayers.get(p));
-                }
-            }
-
-            if (args[0].equals("remove")) {
-                if (!sender.hasPermission("rpo.op")) {
-                    sender.sendMessage(ChatColor.RED + "ぽまえ権限ないやろ");
-                    return true;
-                }
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "このコマンドはプレイヤーしか実行できません");
-                    return true;
-                }
-                Player p = (Player) sender;
-                usingPlayers.remove(p);
-                particleQueue.remove(p);
-                sender.sendMessage(ChatColor.GREEN + "使用者リストから除外しました");
-            }
-
-            if (args[0].equals("particledrawingrate")) {
-                if (args.length <= 1) {
-                    sender.sendMessage(ChatColor.RED + "/" + label + " particledrawingrate [0～100]");
-                    return true;
-                }
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "このコマンドはプレイヤーしか実行できません");
-                    return true;
-                }
-                Player p = (Player) sender;
-                if (!usingPlayers.containsKey(p)) {
-                    sender.sendMessage(ChatColor.RED + "RyuZUPacketOptimizerの使用者以外は使用できません");
-                    return true;
-                }
-                int i;
-                try {
-                    i = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED + "0～100の値を使用してください");
-                    return true;
-                }
-                if (0 <= i && i <= 100) {
-                    sendPacket(p, new SetParticleDrawingRatePacket(i).encode());
-                    sender.sendMessage(ChatColor.GREEN + "パーティクル描画率を適用しました");
-                    return true;
-                } else {
-                    sender.sendMessage(ChatColor.RED + "0～100の値を使用してください");
-                    return true;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        List<String> list = new ArrayList<>();
-        if (command.getName().equalsIgnoreCase("rpo")) {
-            if (args.length == 1) {
-                if (sender.hasPermission("rpc.op")) {
-                    list.addAll(Arrays.asList("list"));
-                    if (sender instanceof Player && usingPlayers.containsKey((Player) sender)) {
-                        list.addAll(Arrays.asList("remove"));
-                    }
-                }
-
-                if (sender instanceof Player && usingPlayers.containsKey((Player) sender)) {
-                    list.addAll(Arrays.asList("particledrawingrate"));
-                }
-            }
-        }
-        return list;
+    public static void sendPacket(Player p, byte[] packet) {
+        p.sendPluginMessage(plugin, "ryuzupacketoptimizer:main", packet);
     }
 }

@@ -6,11 +6,11 @@ import io.netty.buffer.Unpooled;
 public class CheckUsingModPacket {
     public static final byte ID = 17;
 
-    public byte[] encode() {
+    public ByteBuf encode() {
         ByteBuf buf = Unpooled.buffer();
         buf.writeByte(ID);
 
-        return buf.array();
+        return buf;
     }
 
     public static CheckUsingModPacket decode(byte[] byteArray) {
