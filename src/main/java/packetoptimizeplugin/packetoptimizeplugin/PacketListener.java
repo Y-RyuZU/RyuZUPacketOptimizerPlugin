@@ -28,10 +28,16 @@ public class PacketListener implements PluginMessageListener, Listener {
         byte id = buf.readByte();
         switch (id) {
             case 0:
-                if (!RyuZUPacketOptimizer.usingPlayers.containsKey(player))
-                    RyuZUPacketOptimizer.usingPlayers.put(player, buf.readInt());
-                break;
-            case 1:
+                if (!RyuZUPacketOptimizer.usingPlayers.containsKey(player)) {
+                    int version = buf.readInt();
+                    if (version == 2) RyuZUPacketOptimizer.usingPlayers.put(player, buf.readInt());
+                    else player.sendMessage("======================================\n" +
+                            "【お知らせ】\n" +
+                            "・使用されているMODのバージョンが古いです\n" +
+                            "・更新よろしくお願いします。\n" +
+                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer-1.0.0.jar\n" +
+                            "=============================");
+                }
                 break;
         }
     }

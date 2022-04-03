@@ -46,7 +46,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
         getServer().getMessenger().registerIncomingPluginChannel(this, "ryuzupacketoptimizer:main", listener);
         getServer().getPluginManager().registerEvents(listener, this);
 
-        for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             RyuZUPacketOptimizer.sendPacket(p, new CheckUsingModPacket().encode().array());
         }
 
@@ -136,12 +136,13 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                         case BLOCK_CRACK:
                             WrappedBlockData block = (WrappedBlockData) wrappedparticle.getData();
                             int blockid = ParticleTypes.MaterialTypes.valueOf(block.getType().toString()).getId();
+                            int blockdata = block.getData();
 
                             if (offx != 0 || offy != 0 || offz != 0) {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleOffsetBlockPacket.class.toString())) {
                                         ParticleOffsetBlockPacket vec = (ParticleOffsetBlockPacket) base;
-                                        if (vec.isSimilar(id, count, speed, blockid)) {
+                                        if (vec.isSimilar(id, count, speed, blockid, blockdata)) {
                                             vec.addLocation(x, y, z, offx, offy, offz);
                                             hit = true;
                                             break;
@@ -150,7 +151,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleOffsetBlockPacket(id, count, speed, blockid
+                                            new ParticleOffsetBlockPacket(id, count, speed, blockid, blockdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
                                     );
@@ -159,7 +160,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleBlockPacket.class.toString())) {
                                         ParticleBlockPacket vec = (ParticleBlockPacket) base;
-                                        if (vec.isSimilar(id, count, speed, blockid)) {
+                                        if (vec.isSimilar(id, count, speed, blockid, blockdata)) {
                                             vec.addLocation(x, y, z);
                                             hit = true;
                                             break;
@@ -168,7 +169,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleBlockPacket(id, count, speed, blockid
+                                            new ParticleBlockPacket(id, count, speed, blockid, blockdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z)))
                                     );
                                 }
@@ -177,11 +178,12 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                         case FALLING_DUST:
                             WrappedBlockData fallingdust = (WrappedBlockData) wrappedparticle.getData();
                             int fallingdustid = ParticleTypes.MaterialTypes.valueOf(fallingdust.getType().toString()).getId();
+                            int fallingdustdata = fallingdust.getData();
                             if (offx != 0 || offy != 0 || offz != 0) {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleOffsetFallingDustPacket.class.toString())) {
                                         ParticleOffsetFallingDustPacket vec = (ParticleOffsetFallingDustPacket) base;
-                                        if (vec.isSimilar(id, count, speed, fallingdustid)) {
+                                        if (vec.isSimilar(id, count, speed, fallingdustid, fallingdustdata)) {
                                             vec.addLocation(x, y, z, offx, offy, offz);
                                             hit = true;
                                             break;
@@ -190,7 +192,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleOffsetFallingDustPacket(id, count, speed, fallingdustid
+                                            new ParticleOffsetFallingDustPacket(id, count, speed, fallingdustid, fallingdustdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
                                     );
@@ -199,7 +201,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleFallingDustPacket.class.toString())) {
                                         ParticleFallingDustPacket vec = (ParticleFallingDustPacket) base;
-                                        if (vec.isSimilar(id, count, speed, fallingdustid)) {
+                                        if (vec.isSimilar(id, count, speed, fallingdustid, fallingdustdata)) {
                                             vec.addLocation(x, y, z);
                                             hit = true;
                                             break;
@@ -208,7 +210,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleFallingDustPacket(id, count, speed, fallingdustid
+                                            new ParticleFallingDustPacket(id, count, speed, fallingdustid, fallingdustdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z)))
                                     );
                                 }
@@ -217,11 +219,12 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                         case ITEM_CRACK:
                             ItemStack item = (ItemStack) wrappedparticle.getData();
                             int itemid = ParticleTypes.MaterialTypes.valueOf(item.getType().toString()).getId();
+                            int itemdata = item.getItemMeta().getCustomModelData();
                             if (offx != 0 || offy != 0 || offz != 0) {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleOffsetItemPacket.class.toString())) {
                                         ParticleOffsetItemPacket vec = (ParticleOffsetItemPacket) base;
-                                        if (vec.isSimilar(id, count, speed, itemid)) {
+                                        if (vec.isSimilar(id, count, speed, itemid, itemdata)) {
                                             vec.addLocation(x, y, z, offx, offy, offz);
                                             hit = true;
                                             break;
@@ -230,7 +233,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleOffsetItemPacket(id, count, speed, itemid
+                                            new ParticleOffsetItemPacket(id, count, speed, itemid, itemdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
                                     );
@@ -239,7 +242,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 for (ParticleBasePacket base : packets) {
                                     if (base.getClass().toString().equals(ParticleItemPacket.class.toString())) {
                                         ParticleItemPacket vec = (ParticleItemPacket) base;
-                                        if (vec.isSimilar(id, count, speed, itemid)) {
+                                        if (vec.isSimilar(id, count, speed, itemid, itemdata)) {
                                             vec.addLocation(x, y, z);
                                             hit = true;
                                             break;
@@ -248,7 +251,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
                                 }
                                 if (!hit) {
                                     packets.add(
-                                            new ParticleItemPacket(id, count, speed, itemid
+                                            new ParticleItemPacket(id, count, speed, itemid, itemdata
                                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z)))
                                     );
                                 }

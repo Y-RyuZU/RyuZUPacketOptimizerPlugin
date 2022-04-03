@@ -10,19 +10,22 @@ public class ParticleOffsetItemPacket extends ParticleOffsetPacket {
     public static final byte ID = 11;
 
     protected final int itemid;
+    protected final int data;
 
-    public ParticleOffsetItemPacket(int type, int count, float speed, int itemid) {
+    public ParticleOffsetItemPacket(int type, int count, float speed, int itemid, int data) {
         super(type, count, speed);
         this.itemid = itemid;
+        this.data = data;
     }
 
-    public ParticleOffsetItemPacket(int type, int count, float speed, int itemid, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {
+    public ParticleOffsetItemPacket(int type, int count, float speed, int itemid, int data, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {
         super(type, count, speed, x, y, z, offx, offy, offz);
         this.itemid = itemid;
+        this.data = data;
     }
 
-    public boolean isSimilar(int type, int count, float speed, int itemid) {
-        return this.type == type && this.count == count && this.speed == speed && this.itemid == itemid && 21 + this.x.size() * 48 + 48 < 1024;
+    public boolean isSimilar(int type, int count, float speed, int itemid,int data) {
+        return this.type == type && this.count == count && this.speed == speed && this.data == data && this.itemid == itemid && 21 + this.x.size() * 48 + 48 < 1024;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class ParticleOffsetItemPacket extends ParticleOffsetPacket {
         buf.writeInt(count);
         buf.writeFloat(speed);
         buf.writeInt(itemid);
+        buf.writeInt(data);
         buf.writeInt(x.size());
         for (int i = 0; i < x.size(); i++) {
             buf.writeDouble(x.get(i));
@@ -56,6 +60,7 @@ public class ParticleOffsetItemPacket extends ParticleOffsetPacket {
         int count = buf.readInt();
         float speed = buf.readFloat();
         int blockid = buf.readInt();
+        int data = buf.readInt();
         int size = buf.readInt();
         List<Double> x = new ArrayList<>();
         List<Double> y = new ArrayList<>();
@@ -71,6 +76,6 @@ public class ParticleOffsetItemPacket extends ParticleOffsetPacket {
             offy.add(buf.readFloat());
             offz.add(buf.readFloat());
         }
-        return new ParticleOffsetItemPacket(type, count, speed, blockid, x, y, z, offx, offy, offz);
+        return new ParticleOffsetItemPacket(type, count, speed, blockid, data, x, y, z, offx, offy, offz);
     }
 }

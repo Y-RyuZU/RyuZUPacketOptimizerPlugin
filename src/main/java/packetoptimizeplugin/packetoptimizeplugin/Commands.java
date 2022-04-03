@@ -231,6 +231,7 @@ public class Commands {
                     Collection<Player> usingPlayers = new ArrayList<>();
                     for (Player p : players) {
                         if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
+                            if(RyuZUPacketOptimizer.particleQueue.get(p) == null) RyuZUPacketOptimizer.particleQueue.put(p , new ArrayDeque<>());
                             RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count, r, g, b, scale, speed
                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
@@ -321,6 +322,7 @@ public class Commands {
                     Collection<Player> usingPlayers = new ArrayList<>();
                     for (Player p : players) {
                         if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
+                            if(RyuZUPacketOptimizer.particleQueue.get(p) == null) RyuZUPacketOptimizer.particleQueue.put(p , new ArrayDeque<>());
                             RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count, r, g, b, scale, speed
                                     , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
                                     , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))

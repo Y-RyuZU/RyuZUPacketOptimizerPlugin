@@ -11,19 +11,22 @@ public class ParticleFallingDustPacket extends ParticleCountPacket {
     public static final byte ID = 8;
 
     protected final int blockid;
+    protected final int data;
 
-    public ParticleFallingDustPacket(int type, int count, float speed, int blockid) {
+    public ParticleFallingDustPacket(int type, int count, float speed, int blockid, int data) {
         super(type, count, speed);
         this.blockid = blockid;
+        this.data = data;
     }
 
-    public ParticleFallingDustPacket(int type, int count, float speed, int blockid, List<Double> x, List<Double> y, List<Double> z) {
+    public ParticleFallingDustPacket(int type, int count, float speed, int blockid, int data, List<Double> x, List<Double> y, List<Double> z) {
         super(type, count, speed, x, y, z);
         this.blockid = blockid;
+        this.data = data;
     }
 
-    public boolean isSimilar(int type, int count, float speed, int blockid) {
-        return this.type == type && this.count == count && this.speed == speed && this.blockid == blockid && 21 + this.x.size() * 24 + 24 < 1024;
+    public boolean isSimilar(int type, int count, float speed, int blockid, int data) {
+        return this.type == type && this.count == count && this.speed == speed && this.blockid == blockid && this.data == data && 21 + this.x.size() * 24 + 24 < 1024;
     }
 
     @Override
@@ -34,6 +37,7 @@ public class ParticleFallingDustPacket extends ParticleCountPacket {
         buf.writeInt(count);
         buf.writeFloat(speed);
         buf.writeInt(blockid);
+        buf.writeInt(data);
         buf.writeInt(x.size());
         for (int i = 0; i < x.size(); i++) {
             buf.writeDouble(x.get(i));
@@ -54,6 +58,7 @@ public class ParticleFallingDustPacket extends ParticleCountPacket {
         int count = buf.readInt();
         float speed = buf.readFloat();
         int blockid = buf.readInt();
+        int data = buf.readInt();
         int size = buf.readInt();
         List<Double> x = new ArrayList<>();
         List<Double> y = new ArrayList<>();
@@ -63,6 +68,6 @@ public class ParticleFallingDustPacket extends ParticleCountPacket {
             y.add(buf.readDouble());
             z.add(buf.readDouble());
         }
-        return new ParticleFallingDustPacket(type, count, speed, blockid, x, y, z);
+        return new ParticleFallingDustPacket(type, count, speed, blockid,data, x, y, z);
     }
 }
