@@ -30,12 +30,12 @@ public class PacketListener implements PluginMessageListener, Listener {
             case 0:
                 if (!RyuZUPacketOptimizer.usingPlayers.containsKey(player)) {
                     int version = buf.readInt();
-                    if (version == 2) RyuZUPacketOptimizer.usingPlayers.put(player, buf.readInt());
+                    if (version == 4) RyuZUPacketOptimizer.usingPlayers.put(player, version);
                     else player.sendMessage("======================================\n" +
                             "【お知らせ】\n" +
                             "・使用されているMODのバージョンが古いです\n" +
                             "・更新よろしくお願いします。\n" +
-                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer-1.0.0.jar\n" +
+                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
                             "=============================");
                 }
                 break;
@@ -63,7 +63,7 @@ public class PacketListener implements PluginMessageListener, Listener {
                             "・使用すると現在欠けているparticleがすべて表示されるようになるmodです\n" +
                             "・パケット削減を行うとPingが安定するので、一人でも使用者が増えると助かります\n" +
                             "modのダウンロードはこちらから↓\n" +
-                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer-1.0.0.jar\n" +
+                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
                             "=============================");
                 }
                 task2.cancel();

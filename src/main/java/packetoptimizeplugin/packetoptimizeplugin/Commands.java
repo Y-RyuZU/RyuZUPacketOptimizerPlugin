@@ -2,9 +2,7 @@ package packetoptimizeplugin.packetoptimizeplugin;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.github.ryuzu.ryuzucommandsgenerator.CommandsGenerator;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.CheckUsingModPacket;
@@ -106,278 +104,74 @@ public class Commands {
                 }
         );
 
-        CommandsGenerator.registerCommand("rpo.particle.flash",
-                data -> {
-                    Entity e = (Entity) data.getSender();
+        List<String> originalparticles = Arrays.asList("flash" , "flame" , "endrod" , "composter" , "crit" , "firework");
 
-                    int type = 0;
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    x = Double.parseDouble(data.getArgs()[2]);
-                    y = Double.parseDouble(data.getArgs()[3]);
-                    z = Double.parseDouble(data.getArgs()[4]);
-                    r = Float.parseFloat(data.getArgs()[5]);
-                    g = Float.parseFloat(data.getArgs()[6]);
-                    b = Float.parseFloat(data.getArgs()[7]);
-                    scale = Float.parseFloat(data.getArgs()[8]);
-                    offx = Float.parseFloat(data.getArgs()[9]);
-                    offy = Float.parseFloat(data.getArgs()[10]);
-                    offz = Float.parseFloat(data.getArgs()[11]);
-                    speed = Float.parseFloat(data.getArgs()[12]);
-                    count = Integer.parseInt(data.getArgs()[13]);
+        for(int i = 0 ; i < originalparticles.size() ; i++) {
+            int finalI = i;
+            CommandsGenerator.registerCommand("rpo.particle." + originalparticles.get(finalI),
+                    data -> {
+                        World world = data.getArgs().length == 14 ? ((Entity)data.getSender()).getWorld() : Bukkit.getServer().getWorld(data.getArgs()[14]);
+                        double x = Double.parseDouble(data.getArgs()[2]);
+                        double y = Double.parseDouble(data.getArgs()[3]);
+                        double z = Double.parseDouble(data.getArgs()[4]);
+                        float r = Float.parseFloat(data.getArgs()[5]);
+                        float g = Float.parseFloat(data.getArgs()[6]);
+                        float b = Float.parseFloat(data.getArgs()[7]);
+                        float scale = Float.parseFloat(data.getArgs()[8]);
+                        float offx = Float.parseFloat(data.getArgs()[9]);
+                        float offy = Float.parseFloat(data.getArgs()[10]);
+                        float offz = Float.parseFloat(data.getArgs()[11]);
+                        float speed = Float.parseFloat(data.getArgs()[12]);
+                        int count = Integer.parseInt(data.getArgs()[13]);
 
-                    Collection<Player> players = e.getWorld().getNearbyPlayers(new Location(e.getWorld(), x, y, z), 512);
-                    Collection<Player> usingPlayers = new ArrayList<>();
-                    for (Player p : players) {
-                        if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
-                            if(RyuZUPacketOptimizer.particleQueue.get(p) == null) RyuZUPacketOptimizer.particleQueue.put(p , new ArrayDeque<>());
-                            RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count, r, g, b, scale, speed
-                                    , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
-                                    , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
-                            );
-                            usingPlayers.add(p);
+                        new OriginalParticleBuilder(finalI)
+                                .location(world, x, y, z)
+                                .count(count)
+                                .extra(speed)
+                                .color(Color.fromRGB(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)), scale)
+                                .offset(offx, offy, offz)
+                                .spawn();
+                    },
+                    "rpo.op",
+                    data -> {
+                        if (data.getArgs().length <= 13) {
+                            data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle " +  originalparticles.get(finalI) + " [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count] {world}");
+                            return false;
                         }
-                    }
-                    players.removeAll(usingPlayers);
-                    Particle.FLASH.builder().location(e.getWorld(), x, y, z).count(count).extra(speed).receivers(players).offset(offx, offy, offz).spawn();
-                },
-                "rpo.op",
-                data -> {
-                    if (data.getArgs().length <= 13) {
-                        data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle flash [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count]");
-                        return false;
-                    }
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    try {
-                        x = Double.parseDouble(data.getArgs()[2]);
-                        y = Double.parseDouble(data.getArgs()[3]);
-                        z = Double.parseDouble(data.getArgs()[4]);
-                        r = Float.parseFloat(data.getArgs()[5]);
-                        g = Float.parseFloat(data.getArgs()[6]);
-                        b = Float.parseFloat(data.getArgs()[7]);
-                        scale = Float.parseFloat(data.getArgs()[8]);
-                        offx = Float.parseFloat(data.getArgs()[9]);
-                        offy = Float.parseFloat(data.getArgs()[10]);
-                        offz = Float.parseFloat(data.getArgs()[11]);
-                        speed = Float.parseFloat(data.getArgs()[12]);
-                        count = Integer.parseInt(data.getArgs()[13]);
-                    } catch (NumberFormatException e) {
-                        data.sendMessage(ChatColor.RED + "正しい型を入力してください");
-                        return false;
-                    }
-                    return true;
-                },
-                data -> {
-                    if (!(data.getSender() instanceof Entity)) {
-                        data.sendMessage(ChatColor.RED + "このコマンドはエンティティのみ実行できます");
-                        return false;
-                    }
-                    return true;
-                }
-        );
 
-        CommandsGenerator.registerCommand("rpo.particle.flame",
-                data -> {
-                    Entity e = (Entity) data.getSender();
-
-                    int type = 1;
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    x = Double.parseDouble(data.getArgs()[2]);
-                    y = Double.parseDouble(data.getArgs()[3]);
-                    z = Double.parseDouble(data.getArgs()[4]);
-                    r = Float.parseFloat(data.getArgs()[5]);
-                    g = Float.parseFloat(data.getArgs()[6]);
-                    b = Float.parseFloat(data.getArgs()[7]);
-                    scale = Float.parseFloat(data.getArgs()[8]);
-                    offx = Float.parseFloat(data.getArgs()[9]);
-                    offy = Float.parseFloat(data.getArgs()[10]);
-                    offz = Float.parseFloat(data.getArgs()[11]);
-                    speed = Float.parseFloat(data.getArgs()[12]);
-                    count = Integer.parseInt(data.getArgs()[13]);
-
-                    Collection<Player> players = e.getWorld().getNearbyPlayers(new Location(e.getWorld(), x, y, z), 512);
-                    Collection<Player> usingPlayers = new ArrayList<>();
-                    for (Player p : players) {
-                        if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
-                            if(RyuZUPacketOptimizer.particleQueue.get(p) == null) RyuZUPacketOptimizer.particleQueue.put(p , new ArrayDeque<>());
-                            RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count, r, g, b, scale, speed
-                                    , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
-                                    , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
-                            );
-                            usingPlayers.add(p);
+                        if (data.getArgs().length >= 15 && Bukkit.getWorld(data.getArgs()[14]) == null) {
+                            data.sendMessage(ChatColor.RED + "正しい型を入力してください");
+                            return false;
                         }
-                    }
-                    players.removeAll(usingPlayers);
-                    Particle.FLAME.builder().location(e.getWorld(), x, y, z).count(count).extra(speed).receivers(players).offset(offx, offy, offz).spawn();
-                },
-                "rpo.op",
-                data -> {
-                    if (data.getArgs().length <= 13) {
-                        data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle flame [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count]");
-                        return false;
-                    }
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    try {
-                        x = Double.parseDouble(data.getArgs()[2]);
-                        y = Double.parseDouble(data.getArgs()[3]);
-                        z = Double.parseDouble(data.getArgs()[4]);
-                        r = Float.parseFloat(data.getArgs()[5]);
-                        g = Float.parseFloat(data.getArgs()[6]);
-                        b = Float.parseFloat(data.getArgs()[7]);
-                        scale = Float.parseFloat(data.getArgs()[8]);
-                        offx = Float.parseFloat(data.getArgs()[9]);
-                        offy = Float.parseFloat(data.getArgs()[10]);
-                        offz = Float.parseFloat(data.getArgs()[11]);
-                        speed = Float.parseFloat(data.getArgs()[12]);
-                        count = Integer.parseInt(data.getArgs()[13]);
-                    } catch (NumberFormatException e) {
-                        data.sendMessage(ChatColor.RED + "正しい型を入力してください");
-                        return false;
-                    }
-                    return true;
-                },
-                data -> {
-                    if (!(data.getSender() instanceof Entity)) {
-                        data.sendMessage(ChatColor.RED + "このコマンドはエンティティのみ実行できます");
-                        return false;
-                    }
-                    return true;
-                }
-        );
 
-        CommandsGenerator.registerCommand("rpo.particle.endrod",
-                data -> {
-                    Entity e = (Entity) data.getSender();
-
-                    int type = 2;
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    x = Double.parseDouble(data.getArgs()[2]);
-                    y = Double.parseDouble(data.getArgs()[3]);
-                    z = Double.parseDouble(data.getArgs()[4]);
-                    r = Float.parseFloat(data.getArgs()[5]);
-                    g = Float.parseFloat(data.getArgs()[6]);
-                    b = Float.parseFloat(data.getArgs()[7]);
-                    scale = Float.parseFloat(data.getArgs()[8]);
-                    offx = Float.parseFloat(data.getArgs()[9]);
-                    offy = Float.parseFloat(data.getArgs()[10]);
-                    offz = Float.parseFloat(data.getArgs()[11]);
-                    speed = Float.parseFloat(data.getArgs()[12]);
-                    count = Integer.parseInt(data.getArgs()[13]);
-
-                    Collection<Player> players = e.getWorld().getNearbyPlayers(new Location(e.getWorld(), x, y, z), 512);
-                    Collection<Player> usingPlayers = new ArrayList<>();
-                    for (Player p : players) {
-                        if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
-                            if(RyuZUPacketOptimizer.particleQueue.get(p) == null) RyuZUPacketOptimizer.particleQueue.put(p , new ArrayDeque<>());
-                            RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count, r, g, b, scale, speed
-                                    , new ArrayList<>(Collections.singletonList(x)), new ArrayList<>(Collections.singletonList(y)), new ArrayList<>(Collections.singletonList(z))
-                                    , new ArrayList<>(Collections.singletonList(offx)), new ArrayList<>(Collections.singletonList(offy)), new ArrayList<>(Collections.singletonList(offz)))
-                            );
-                            usingPlayers.add(p);
+                        try {
+                            Double.parseDouble(data.getArgs()[2]);
+                            Double.parseDouble(data.getArgs()[3]);
+                            Double.parseDouble(data.getArgs()[4]);
+                            Float.parseFloat(data.getArgs()[5]);
+                            Float.parseFloat(data.getArgs()[6]);
+                            Float.parseFloat(data.getArgs()[7]);
+                            Float.parseFloat(data.getArgs()[8]);
+                            Float.parseFloat(data.getArgs()[9]);
+                            Float.parseFloat(data.getArgs()[10]);
+                            Float.parseFloat(data.getArgs()[11]);
+                            Float.parseFloat(data.getArgs()[12]);
+                            Integer.parseInt(data.getArgs()[13]);
+                        } catch (NumberFormatException e) {
+                            data.sendMessage(ChatColor.RED + "正しい型を入力してください");
+                            return false;
                         }
+                        return true;
+                    },
+                    data -> {
+                        if (!(data.getSender() instanceof Entity) && data.getArgs().length <= 13) {
+                            data.sendMessage(ChatColor.RED + "このコマンドはエンティティのみ実行できます");
+                            return false;
+                        }
+                        return true;
                     }
-                    players.removeAll(usingPlayers);
-                    Particle.END_ROD.builder().location(e.getWorld(), x, y, z).count(count).extra(speed).receivers(players).offset(offx, offy, offz).spawn();
-                },
-                "rpo.op",
-                data -> {
-                    if (data.getArgs().length <= 13) {
-                        data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle endrod [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count]");
-                        return false;
-                    }
-                    int count;
-                    float r;
-                    float g;
-                    float b;
-                    float scale;
-                    float speed;
-                    double x;
-                    double y;
-                    double z;
-                    float offx;
-                    float offy;
-                    float offz;
-                    try {
-                        x = Double.parseDouble(data.getArgs()[2]);
-                        y = Double.parseDouble(data.getArgs()[3]);
-                        z = Double.parseDouble(data.getArgs()[4]);
-                        r = Float.parseFloat(data.getArgs()[5]);
-                        g = Float.parseFloat(data.getArgs()[6]);
-                        b = Float.parseFloat(data.getArgs()[7]);
-                        scale = Float.parseFloat(data.getArgs()[8]);
-                        offx = Float.parseFloat(data.getArgs()[9]);
-                        offy = Float.parseFloat(data.getArgs()[10]);
-                        offz = Float.parseFloat(data.getArgs()[11]);
-                        speed = Float.parseFloat(data.getArgs()[12]);
-                        count = Integer.parseInt(data.getArgs()[13]);
-                    } catch (NumberFormatException e) {
-                        data.sendMessage(ChatColor.RED + "正しい型を入力してください");
-                        return false;
-                    }
-                    return true;
-                },
-                data -> {
-                    if (!(data.getSender() instanceof Entity)) {
-                        data.sendMessage(ChatColor.RED + "このコマンドはエンティティのみ実行できます");
-                        return false;
-                    }
-                    return true;
-                }
-        );
+            );
+        }
 
         CommandsGenerator.registerCommand("rpo",
                 data -> {
