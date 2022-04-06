@@ -104,13 +104,13 @@ public class Commands {
                 }
         );
 
-        List<String> originalparticles = Arrays.asList("flash" , "flame" , "endrod" , "composter" , "crit" , "firework");
+        List<String> originalparticles = Arrays.asList("flash", "flame", "endrod", "composter", "crit", "firework");
 
-        for(int i = 0 ; i < originalparticles.size() ; i++) {
+        for (int i = 0; i < originalparticles.size(); i++) {
             int finalI = i;
             CommandsGenerator.registerCommand("rpo.particle." + originalparticles.get(finalI),
                     data -> {
-                        World world = data.getArgs().length == 14 ? ((Entity)data.getSender()).getWorld() : Bukkit.getServer().getWorld(data.getArgs()[14]);
+                        World world = data.getArgs().length == 14 ? ((Entity) data.getSender()).getWorld() : Bukkit.getServer().getWorld(data.getArgs()[14]);
                         double x = Double.parseDouble(data.getArgs()[2]);
                         double y = Double.parseDouble(data.getArgs()[3]);
                         double z = Double.parseDouble(data.getArgs()[4]);
@@ -135,7 +135,7 @@ public class Commands {
                     "rpo.op",
                     data -> {
                         if (data.getArgs().length <= 13) {
-                            data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle " +  originalparticles.get(finalI) + " [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count] {world}");
+                            data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle " + originalparticles.get(finalI) + " [x] [y] [z] [r] [g] [b] [sclae] [offx] [offy] [offz] [speed] [count] {world}");
                             return false;
                         }
 
