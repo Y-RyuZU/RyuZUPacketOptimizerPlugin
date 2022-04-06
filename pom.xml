@@ -6,7 +6,7 @@
 
     <groupId>RyuZUPacketOptimizer</groupId>
     <artifactId>RyuZUPacketOptimizer</artifactId>
-    <version>1.0.0</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
     <name>RyuZUPacketOptimizer</name>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.github.Y-RyuZU</groupId>
             <artifactId>RyuZUCommandsGenerator</artifactId>
-            <version>release</version>
+            <version>1.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
