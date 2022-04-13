@@ -30,7 +30,7 @@ public class PacketListener implements PluginMessageListener, Listener {
             case 0:
                 if (!RyuZUPacketOptimizer.usingPlayers.containsKey(player)) {
                     int version = buf.readInt();
-                    if (version == 4) RyuZUPacketOptimizer.usingPlayers.put(player, version);
+                    if (version == 5) RyuZUPacketOptimizer.usingPlayers.put(player, version);
                     else player.sendMessage("======================================\n" +
                             "【お知らせ】\n" +
                             "・使用されているMODのバージョンが古いです。\n" +
