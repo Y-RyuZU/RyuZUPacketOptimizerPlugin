@@ -10,13 +10,16 @@ public class ParticleVectorPacket extends ParticleBasePacket {
     public static final byte ID = 6;
 
     protected final float speed;
-    protected List<Float> offx = new ArrayList<>();
-    protected List<Float> offy = new ArrayList<>();
-    protected List<Float> offz = new ArrayList<>();
+    protected List<Float> offx;
+    protected List<Float> offy;
+    protected List<Float> offz;
 
     public ParticleVectorPacket(int type, float speed) {
         super(type);
         this.speed = speed;
+        this.offx = new ArrayList<>();
+        this.offy = new ArrayList<>();
+        this.offz = new ArrayList<>();
     }
 
     public ParticleVectorPacket(int type, float speed, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {

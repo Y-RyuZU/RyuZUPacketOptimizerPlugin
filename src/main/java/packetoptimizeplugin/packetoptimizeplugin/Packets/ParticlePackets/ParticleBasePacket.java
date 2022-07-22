@@ -13,12 +13,15 @@ public class ParticleBasePacket {
 
     protected final int type;
 
-    protected List<Double> x = new ArrayList<>();
-    protected List<Double> y = new ArrayList<>();
-    protected List<Double> z = new ArrayList<>();
+    protected List<Double> x;
+    protected List<Double> y;
+    protected List<Double> z;
 
     public ParticleBasePacket(int type) {
         this.type = type;
+        this.x = new ArrayList<>();
+        this.y = new ArrayList<>();
+        this.z = new ArrayList<>();
     }
 
     public ParticleBasePacket(int type, List<Double> x, List<Double> y, List<Double> z) {

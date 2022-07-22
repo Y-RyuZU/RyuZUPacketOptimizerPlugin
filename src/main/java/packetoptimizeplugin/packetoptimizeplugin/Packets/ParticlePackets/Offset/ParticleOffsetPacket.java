@@ -10,12 +10,15 @@ import java.util.List;
 public class ParticleOffsetPacket extends ParticleCountPacket {
     public static final byte ID = 5;
 
-    protected List<Float> offx = new ArrayList<>();
-    protected List<Float> offy = new ArrayList<>();
-    protected List<Float> offz = new ArrayList<>();
+    protected List<Float> offx;
+    protected List<Float> offy;
+    protected List<Float> offz;
 
     public ParticleOffsetPacket(int type, int count, float speed) {
         super(type, count, speed);
+        this.offx = new ArrayList<>();
+        this.offy = new ArrayList<>();
+        this.offz = new ArrayList<>();
     }
 
     public ParticleOffsetPacket(int type, int count, float speed, List<Double> x, List<Double> y, List<Double> z, List<Float> offx, List<Float> offy, List<Float> offz) {
