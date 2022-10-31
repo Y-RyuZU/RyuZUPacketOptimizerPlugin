@@ -64,6 +64,7 @@ public class PacketListener implements PluginMessageListener, Listener {
                                           "・使用すると現在欠けているparticleがすべて表示されるようになるmodです\n" +
                                           "・パケット削減を行うとPingが安定するので、一人でも使用者が増えると助かります\n" +
                                           "[" + ChatColor.GOLD + "NEW" + ChatColor.RESET + "] MODを1.18.2に対応させました！\n" +
+                                          "[" + ChatColor.GOLD + "FIX" + ChatColor.RESET + "] LGWにも1.18.2で参加できるようになりました！\n" +
                                           "のダウンロードはこちらから↓\n" +
                                           "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
                                           "=============================");
