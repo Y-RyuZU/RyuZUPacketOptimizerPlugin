@@ -26,31 +26,37 @@ public class OriginalParticleBuilder extends ParticleBuilder {
     @Override
     public ParticleBuilder spawn() {
         if (location() == null) return this;
-        if (originalparticles.contains(particle()) && (data() != null && data().getClass().equals(Particle.DustOptions.class))) {
-            int type = type = originalparticles.indexOf(particle());
-            Particle.DustOptions color = data();
+        List<Player> players = new ArrayList<>(receivers() != null ? receivers() : location().getWorld().getNearbyPlayers(location(), 512));
+        if (originalparticles.contains(particle()) && data() != null) {
+            int id = particle().ordinal();
+            if (data().getClass().equals(Particle.DustOptions.class)) {
+                Particle.DustOptions color = data();
 
-            Collection<Player> players = receivers() != null ? receivers() : location().getWorld().getNearbyPlayers(location(), 512);
-            Collection<Player> usingplayers = new ArrayList<>();
-            for (Player p : players) {
-                if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
-                    if (RyuZUPacketOptimizer.particleQueue.get(p) == null)
-                        RyuZUPacketOptimizer.particleQueue.put(p, new ArrayDeque<>());
-                    RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(type, count(), color.getColor().getRed() / 255f, color.getColor().getGreen() / 255f, color.getColor().getBlue() / 255f, color.getSize(), new Double(extra()).floatValue()
-                            , new ArrayList<>(Collections.singletonList(location().getX())), new ArrayList<>(Collections.singletonList(location().getY())), new ArrayList<>(Collections.singletonList(location().getZ()))
-                            , new ArrayList<>(Collections.singletonList(new Double(offsetX()).floatValue())), new ArrayList<>(Collections.singletonList(new Double(offsetY()).floatValue())), new ArrayList<>(Collections.singletonList(new Double(offsetZ()).floatValue())))
-                    );
-                    usingplayers.add(p);
+                Collection<Player> usingplayers = new ArrayList<>();
+                for (Player p : players) {
+                    if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
+                        if (RyuZUPacketOptimizer.particleQueue.get(p) == null)
+                            RyuZUPacketOptimizer.particleQueue.put(p, new ArrayDeque<>());
+                        RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(id, count(), color.getColor().getRed() / 255f, color.getColor().getGreen() / 255f, color.getColor().getBlue() / 255f, color.getSize(), (float) extra()
+                                , new ArrayList<>(Collections.singletonList(location().getX())), new ArrayList<>(Collections.singletonList(location().getY())), new ArrayList<>(Collections.singletonList(location().getZ()))
+                                , new ArrayList<>(Collections.singletonList((float) offsetX())), new ArrayList<>(Collections.singletonList((float) offsetY())), new ArrayList<>(Collections.singletonList((float) offsetZ())))
+                        );
+                        usingplayers.add(p);
+                    }
+                }
+                players.removeAll(usingplayers);
+                particle().builder().location(location()).count(count()).extra(extra()).receivers(players).offset(offsetX(), offsetY(), offsetZ()).spawn();
+            } else {
+                for (Player p : players) {
+                    PacketOptimizer.optimize(id, location().getX(), location().getY(), location().getZ(), (float) offsetX(), (float) offsetY(), (float) offsetZ(), (float) extra(), count(), particle(), data(), p);
                 }
             }
-            players.removeAll(usingplayers);
-            particle().builder().location(location()).count(count()).extra(extra()).receivers(players).offset(offsetX(), offsetY(), offsetZ()).spawn();
-        } else
-            location().getWorld().spawnParticle(
-                    particle(), receivers(), source(),
-                    location().getX(), location().getY(), location().getZ(),
-                    count(), offsetX(), offsetY(), offsetZ(), extra(), data(), true
-            );
+        }
+        location().getWorld().spawnParticle(
+                particle(), players, source(),
+                location().getX(), location().getY(), location().getZ(),
+                count(), offsetX(), offsetY(), offsetZ(), extra(), data(), true
+        );
         return this;
     }
 

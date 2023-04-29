@@ -5,6 +5,7 @@ import com.github.ryuzu.ryuzucommandsgenerator.CommandsGenerator;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.CheckUsingModPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Original.ParticleOriginalColorPacket;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.SetParticleDrawingRatePacket;

@@ -3,6 +3,7 @@ package packetoptimizeplugin.packetoptimizeplugin;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,13 +31,13 @@ public class PacketListener implements PluginMessageListener, Listener {
             case 0:
                 if (!RyuZUPacketOptimizer.usingPlayers.containsKey(player)) {
                     int version = buf.readInt();
-                    if (version == 5) RyuZUPacketOptimizer.usingPlayers.put(player, version);
+                    if (version == 6) RyuZUPacketOptimizer.usingPlayers.put(player, version);
                     else player.sendMessage("======================================\n" +
-                            "【お知らせ】\n" +
-                            "・使用されているMODのバージョンが古いです。\n" +
-                            "・更新よろしくお願いします。\n" +
-                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
-                            "=============================");
+                                                    "【お知らせ】\n" +
+                                                    "・使用されているMODのバージョンが古いです。\n" +
+                                                    "・更新よろしくお願いします。\n" +
+                                                    "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
+                                                    "=============================");
                 }
                 break;
         }
@@ -59,12 +60,14 @@ public class PacketListener implements PluginMessageListener, Listener {
             Bukkit.getScheduler().runTaskTimer(RyuZUPacketOptimizer.plugin, (task2) -> {
                 if (!RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
                     p.sendMessage("======================================\n" +
-                            "【お知らせ】\n" +
-                            "・使用すると現在欠けているparticleがすべて表示されるようになるmodです\n" +
-                            "・パケット削減を行うとPingが安定するので、一人でも使用者が増えると助かります\n" +
-                            "modのダウンロードはこちらから↓\n" +
-                            "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
-                            "=============================");
+                                          "【お知らせ】\n" +
+                                          "・使用すると現在欠けているparticleがすべて表示されるようになるmodです\n" +
+                                          "・パケット削減を行うとPingが安定するので、一人でも使用者が増えると助かります\n" +
+                                          "[" + ChatColor.GOLD + "NEW" + ChatColor.RESET + "] MODを1.18.2に対応させました！\n" +
+                                          "[" + ChatColor.GOLD + "FIX" + ChatColor.RESET + "] LGWにも1.18.2で参加できるようになりました！\n" +
+                                          "のダウンロードはこちらから↓\n" +
+                                          "https://github.com/azisaba/RyuZUPacketOptimizerMod/releases/latest/download/RyuZUPacketOptimizer.jar\n" +
+                                          "=============================");
                 }
                 task2.cancel();
             }, 20 * 2L, 0L);
