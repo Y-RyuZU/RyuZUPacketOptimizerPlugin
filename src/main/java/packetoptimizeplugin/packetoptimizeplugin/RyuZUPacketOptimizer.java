@@ -55,28 +55,29 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
 //            public void onPacketSending(PacketEvent event) {
 //                PacketContainer packet = event.getPacket();
 //                new PacketContainer(PacketType.Play.Client.BLOCK_PLACE).getModifier().writeDefaults();
-//                Player p = event.getPlayer();
+////                Player p = event.getPlayer();
 //
 //                int count = packet.getIntegers().read(0);
-//                if (usingPlayers.containsKey(p)) {
-//                    Queue<ParticleBasePacket> packets = particleQueue.getOrDefault(p, new ArrayDeque<>());
-//                    WrappedParticle wrappedparticle = packet.getNewParticles().read(0);
-//                    Particle newparticle = wrappedparticle.getParticle();
-//
-//                    int id = ParticleTypes.ParticleType.valueOf(newparticle.name()).getId();
-//                    double x = packet.getDoubles().read(0);
-//                    double y = packet.getDoubles().read(1);
-//                    double z = packet.getDoubles().read(2);
-//                    float offx = packet.getFloat().read(0);
-//                    float offy = packet.getFloat().read(1);
-//                    float offz = packet.getFloat().read(2);
-//                    float speed = packet.getFloat().read(3);
-//
-//                    PacketOptimizer.optimize(id, x, y, z, offx, offy, offz, speed, count, newparticle, wrappedparticle, packets);
-//
-//                    particleQueue.put(p, packets);
-//                    event.setCancelled(true);
-//                } else if (limitcount > 500 && Math.random() >= 0.3) {
+////                if (usingPlayers.containsKey(p)) {
+////                    Queue<ParticleBasePacket> packets = particleQueue.getOrDefault(p, new ArrayDeque<>());
+////                    WrappedParticle wrappedparticle = packet.getNewParticles().read(0);
+////                    Particle newparticle = wrappedparticle.getParticle();
+////
+////                    int id = ParticleTypes.ParticleType.valueOf(newparticle.name()).getId();
+////                    double x = packet.getDoubles().read(0);
+////                    double y = packet.getDoubles().read(1);
+////                    double z = packet.getDoubles().read(2);
+////                    float offx = packet.getFloat().read(0);
+////                    float offy = packet.getFloat().read(1);
+////                    float offz = packet.getFloat().read(2);
+////                    float speed = packet.getFloat().read(3);
+////
+////                    PacketOptimizer.optimize(id, x, y, z, offx, offy, offz, speed, count, newparticle, wrappedparticle, packets);
+////
+////                    particleQueue.put(p, packets);
+////                    event.setCancelled(true);
+////                } else
+//                if (limitcount > 500 && Math.random() >= 0.3) {
 //                    event.setCancelled(true);
 //                } else {
 //                    limitcount++;
@@ -85,7 +86,7 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
 //            }
 //        });
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> limitcount = 0, 0L, 10L);
+//        Bukkit.getScheduler().runTaskTimer(this, () -> limitcount = 0, 0L, 10L);
 
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for (Player p : particleQueue.keySet()) {

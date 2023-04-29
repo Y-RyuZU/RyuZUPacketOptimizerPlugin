@@ -26,10 +26,9 @@ public class OriginalParticleBuilder extends ParticleBuilder {
     @Override
     public ParticleBuilder spawn() {
         if (location() == null) return this;
-        if (originalparticles.contains(particle())) {
-
-            Collection<Player> players = receivers() != null ? receivers() : location().getWorld().getNearbyPlayers(location(), 512);
-            int id = ParticleTypes.ParticleType.valueOf(particle().name()).getId();
+        List<Player> players = new ArrayList<>(receivers() != null ? receivers() : location().getWorld().getNearbyPlayers(location(), 512));
+        if (originalparticles.contains(particle()) && data() != null) {
+            int id = particle().ordinal();
             if (data().getClass().equals(Particle.DustOptions.class)) {
                 Particle.DustOptions color = data();
 
@@ -38,7 +37,7 @@ public class OriginalParticleBuilder extends ParticleBuilder {
                     if (RyuZUPacketOptimizer.usingPlayers.containsKey(p)) {
                         if (RyuZUPacketOptimizer.particleQueue.get(p) == null)
                             RyuZUPacketOptimizer.particleQueue.put(p, new ArrayDeque<>());
-                        RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(id, count(), color.getColor().getRed() / 255f, color.getColor().getGreen() / 255f, color.getColor().getBlue() / 255f, color.getSize(), new Double(extra()).floatValue()
+                        RyuZUPacketOptimizer.particleQueue.get(p).add(new ParticleOriginalColorPacket(id, count(), color.getColor().getRed() / 255f, color.getColor().getGreen() / 255f, color.getColor().getBlue() / 255f, color.getSize(), (float) extra()
                                 , new ArrayList<>(Collections.singletonList(location().getX())), new ArrayList<>(Collections.singletonList(location().getY())), new ArrayList<>(Collections.singletonList(location().getZ()))
                                 , new ArrayList<>(Collections.singletonList((float) offsetX())), new ArrayList<>(Collections.singletonList((float) offsetY())), new ArrayList<>(Collections.singletonList((float) offsetZ())))
                         );
@@ -52,13 +51,12 @@ public class OriginalParticleBuilder extends ParticleBuilder {
                     PacketOptimizer.optimize(id, location().getX(), location().getY(), location().getZ(), (float) offsetX(), (float) offsetY(), (float) offsetZ(), (float) extra(), count(), particle(), data(), p);
                 }
             }
-        } else {
-            location().getWorld().spawnParticle(
-                    particle(), receivers(), source(),
-                    location().getX(), location().getY(), location().getZ(),
-                    count(), offsetX(), offsetY(), offsetZ(), extra(), data(), true
-            );
         }
+        location().getWorld().spawnParticle(
+                particle(), players, source(),
+                location().getX(), location().getY(), location().getZ(),
+                count(), offsetX(), offsetY(), offsetZ(), extra(), data(), true
+        );
         return this;
     }
 
