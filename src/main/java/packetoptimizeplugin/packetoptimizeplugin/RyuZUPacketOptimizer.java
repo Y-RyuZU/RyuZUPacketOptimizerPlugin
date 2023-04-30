@@ -33,14 +33,13 @@ public final class RyuZUPacketOptimizer extends JavaPlugin {
     public static HashMap<Player, Queue<ParticleBasePacket>> particleQueue = new HashMap<>();
     public static long limitcount;
     public static RyuZUPacketOptimizer plugin;
-    public static RyuZUCommandsGenerator generator;
 
     @Override
     public void onEnable() {
         plugin = this;
         listener = new PacketListener();
         Commands.implement();
-        generator = new RyuZUCommandsGenerator(this, ChatColor.RED + "ぽまえ権限ないやろ");
+        RyuZUCommandsGenerator.initialize(this, ChatColor.RED + "ぽまえ権限ないやろ");
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "ryuzupacketoptimizer:main");
         getServer().getMessenger().registerIncomingPluginChannel(this, "ryuzupacketoptimizer:main", listener);
