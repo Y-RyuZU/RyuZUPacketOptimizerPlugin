@@ -187,9 +187,7 @@ public class Commands {
         );
 
         CommandsGenerator.registerCommand("rpo.particle",
-                data -> {
-                    data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle [flash/flame/endrod]");
-                },
+                data -> data.sendMessage(ChatColor.RED + "/" + data.getLabel() + " particle [flash/flame/endrod]"),
                 "rpo.op",
                 data -> data.getArgs().length == 1
         );

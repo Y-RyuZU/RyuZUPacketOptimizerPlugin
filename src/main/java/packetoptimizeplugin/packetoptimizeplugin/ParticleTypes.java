@@ -1,5 +1,13 @@
 package packetoptimizeplugin.packetoptimizeplugin;
 
+import org.bukkit.Particle;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ParticleTypes {
     public enum ParticleType {
         AMBIENT_ENTITY_EFFECT(0), ANGRY_VILLAGER(1), BLOCK(2), BLOCK_MARKER(3), BUBBLE(4), CLOUD(5), CRIT(6), DAMAGE_INDICATOR(7), DRAGON_BREATH(8), DRIPPING_LAVA(9), FALLING_LAVA(10), LANDING_LAVA(11), DRIPPING_WATER(12), FALLING_WATER(13), DUST(14), DUST_COLOR_TRANSITION(15), EFFECT(16), ELDER_GUARDIAN(17), ENCHANTED_HIT(18), ENCHANT(19), END_ROD(20), ENTITY_EFFECT(21), EXPLOSION_EMITTER(22), EXPLOSION(23), FALLING_DUST(24), FIREWORK(25), FISHING(26), FLAME(27), SOUL_FIRE_FLAME(28), SOUL(29), FLASH(30), HAPPY_VILLAGER(31), COMPOSTER(32), HEART(33), INSTANT_EFFECT(34), ITEM(35), VIBRATION(36), ITEM_SLIME(37), ITEM_SNOWBALL(38), LARGE_SMOKE(39), LAVA(40), MYCELIUM(41), NOTE(42), POOF(43), PORTAL(44), RAIN(45), SMOKE(46), SNEEZE(47), SPIT(48), SQUID_INK(49), SWEEP_ATTACK(50), TOTEM_OF_UNDYING(51), UNDERWATER(52), SPLASH(53), WITCH(54), BUBBLE_POP(55), CURRENT_DOWN(56), BUBBLE_COLUMN_UP(57), NAUTILUS(58), DOLPHIN(59), CAMPFIRE_COSY_SMOKE(60), CAMPFIRE_SIGNAL_SMOKE(61), DRIPPING_HONEY(62), FALLING_HONEY(63), LANDING_HONEY(64), FALLING_NECTAR(65), FALLING_SPORE_BLOSSOM(66), ASH(67), CRIMSON_SPORE(68), WARPED_SPORE(69), SPORE_BLOSSOM_AIR(70), DRIPPING_OBSIDIAN_TEAR(71), FALLING_OBSIDIAN_TEAR(72), LANDING_OBSIDIAN_TEAR(73), REVERSE_PORTAL(74), WHITE_ASH(75), SMALL_FLAME(76), SNOWFLAKE(77), DRIPPING_DRIPSTONE_LAVA(78), FALLING_DRIPSTONE_LAVA(79), DRIPPING_DRIPSTONE_WATER(80), FALLING_DRIPSTONE_WATER(81), GLOW_SQUID_INK(82), GLOW(83), WAX_ON(84), WAX_OFF(85), ELECTRIC_SPARK(86), SCRAPE(87);
@@ -11,6 +19,121 @@ public class ParticleTypes {
         }
 
         public int getId() {
+            return id;
+        }
+    }
+
+    public enum ParticleTypeMapping {
+        EXPLOSION_NORMAL("poof"),
+        EXPLOSION_LARGE("explosion"),
+        EXPLOSION_HUGE("explosion_emitter"),
+        FIREWORKS_SPARK("firework"),
+        WATER_BUBBLE("bubble"),
+        WATER_SPLASH("splash"),
+        WATER_WAKE("fishing"),
+        SUSPENDED("underwater"),
+        SUSPENDED_DEPTH("underwater"),
+        CRIT("crit"),
+        CRIT_MAGIC("enchanted_hit"),
+        SMOKE_NORMAL("smoke"),
+        SMOKE_LARGE("large_smoke"),
+        SPELL("effect"),
+        SPELL_INSTANT("instant_effect"),
+        SPELL_MOB("entity_effect"),
+        SPELL_MOB_AMBIENT("ambient_entity_effect"),
+        SPELL_WITCH("witch"),
+        DRIP_WATER("dripping_water"),
+        DRIP_LAVA("dripping_lava"),
+        VILLAGER_ANGRY("angry_villager"),
+        VILLAGER_HAPPY("happy_villager"),
+        TOWN_AURA("mycelium"),
+        NOTE("note"),
+        PORTAL("portal"),
+        ENCHANTMENT_TABLE("enchant"),
+        FLAME("flame"),
+        LAVA("lava"),
+        CLOUD("cloud"),
+        REDSTONE("dust"),
+        SNOWBALL("item_snowball"),
+        SNOW_SHOVEL("item_snowball"),
+        SLIME("item_slime"),
+        HEART("heart"),
+        ITEM_CRACK("item"),
+        BLOCK_CRACK("block"),
+        BLOCK_DUST("block"),
+        WATER_DROP("rain"),
+        MOB_APPEARANCE("elder_guardian"),
+        DRAGON_BREATH("dragon_breath"),
+        END_ROD("end_rod"),
+        DAMAGE_INDICATOR("damage_indicator"),
+        SWEEP_ATTACK("sweep_attack"),
+        FALLING_DUST("falling_dust"),
+        TOTEM("totem_of_undying"),
+        SPIT("spit"),
+        SQUID_INK("squid_ink"),
+        BUBBLE_POP("bubble_pop"),
+        CURRENT_DOWN("current_down"),
+        BUBBLE_COLUMN_UP("bubble_column_up"),
+        NAUTILUS("nautilus"),
+        DOLPHIN("dolphin"),
+        SNEEZE("sneeze"),
+        CAMPFIRE_COSY_SMOKE("campfire_cosy_smoke"),
+        CAMPFIRE_SIGNAL_SMOKE("campfire_signal_smoke"),
+        COMPOSTER("composter"),
+        FLASH("flash"),
+        FALLING_LAVA("falling_lava"),
+        LANDING_LAVA("landing_lava"),
+        FALLING_WATER("falling_water"),
+        DRIPPING_HONEY("dripping_honey"),
+        FALLING_HONEY("falling_honey"),
+        LANDING_HONEY("landing_honey"),
+        FALLING_NECTAR("falling_nectar"),
+        SOUL_FIRE_FLAME("soul_fire_flame"),
+        ASH("ash"),
+        CRIMSON_SPORE("crimson_spore"),
+        WARPED_SPORE("warped_spore"),
+        SOUL("soul"),
+        DRIPPING_OBSIDIAN_TEAR("dripping_obsidian_tear"),
+        FALLING_OBSIDIAN_TEAR("falling_obsidian_tear"),
+        LANDING_OBSIDIAN_TEAR("landing_obsidian_tear"),
+        REVERSE_PORTAL("reverse_portal"),
+        WHITE_ASH("white_ash"),
+        DUST_COLOR_TRANSITION("dust_color_transition"),
+        VIBRATION("vibration"),
+        FALLING_SPORE_BLOSSOM("falling_spore_blossom"),
+        SPORE_BLOSSOM_AIR("spore_blossom_air"),
+        SMALL_FLAME("small_flame"),
+        SNOWFLAKE("snowflake"),
+        DRIPPING_DRIPSTONE_LAVA("dripping_dripstone_lava"),
+        FALLING_DRIPSTONE_LAVA("falling_dripstone_lava"),
+        DRIPPING_DRIPSTONE_WATER("dripping_dripstone_water"),
+        FALLING_DRIPSTONE_WATER("falling_dripstone_water"),
+        GLOW_SQUID_INK("glow_squid_ink"),
+        GLOW("glow"),
+        WAX_ON("wax_on"),
+        WAX_OFF("wax_off"),
+        ELECTRIC_SPARK("electric_spark"),
+        SCRAPE("scrape"),
+        BLOCK_MARKER("block_marker"),
+        SONIC_BOOM("sonic_boom"),
+        SCULK_SOUL("sculk_soul"),
+        SCULK_CHARGE("sculk_charge"),
+        SCULK_CHARGE_POP("sculk_charge_pop"),
+        SHRIEK("shriek"),
+        DRIPPING_CHERRY_LEAVES("dripping_cherry_leaves"),
+        FALLING_CHERRY_LEAVES("falling_cherry_leaves"),
+        LANDING_CHERRY_LEAVES("landing_cherry_leaves");
+        // ----- Legacy Separator -----
+//        LEGACY_BLOCK_CRACK("block"),
+//        LEGACY_BLOCK_DUST("block"),
+//        LEGACY_FALLING_DUST("falling_dust");
+        private final String id;
+
+        ParticleTypeMapping(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
             return id;
         }
     }
@@ -30,5 +153,19 @@ public class ParticleTypes {
         public int getId() {
             return id;
         }
+    }
+
+//    public static final List<String> PARTICLE_TYPES = Arrays.stream(Particle.values()).map(Enum::name).sorted().toList();
+
+//    public static final List<Particle> PARTICLE_TYPES = Arrays.stream(Particle.values())
+//            .filter(p -> Arrays.stream(ParticleType.values()).anyMatch(minecraft -> minecraft.name().toUpperCase().equals(p.name().toUpperCase())))
+//            .sorted((p1 , p2) -> ParticleType.valueOf(p1.name()).getId().compareToIgnoreCase(ParticleType.valueOf(p2.name()).getId())).toList();
+
+//    public static final List<Particle> PARTICLE_TYPES = Arrays.stream(Particle.values())
+//            .filter(p -> Arrays.stream(ParticleType.values()).anyMatch(minecraft -> minecraft.name().toUpperCase().equals(p.name().toUpperCase())))
+//            .sorted((p1 , p2) -> ParticleType.valueOf(p1.name()).getId().compareToIgnoreCase(ParticleType.valueOf(p2.name()).getId())).toList();
+
+    public static int getId(Particle particle) {
+        return ParticleType.valueOf(ParticleTypeMapping.valueOf(particle.name()).getId().toUpperCase()).ordinal();
     }
 }
