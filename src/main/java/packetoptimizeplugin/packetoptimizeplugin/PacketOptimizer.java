@@ -23,7 +23,7 @@ import java.util.Queue;
 public class PacketOptimizer {
 
     public static void optimize(int id, double x, double y, double z, float offx, float offy, float offz, float speed, int count, Particle newparticle, Object data, Player p) {
-        optimize(id, x, y, z, offx, offy, offz, speed, count, newparticle, data, RyuZUPacketOptimizer.particleQueue.getOrDefault(p , new ArrayDeque<>()));
+        optimize(id, x, y, z, offx, offy, offz, speed, count, newparticle, data, RyuZUPacketOptimizer.particleQueue.computeIfAbsent(p, up -> new ArrayDeque<>()));
     }
 
     public static void optimize(int id, double x, double y, double z, float offx, float offy, float offz, float speed, int count, Particle newparticle, Object data, Queue<ParticleBasePacket> packets) {
