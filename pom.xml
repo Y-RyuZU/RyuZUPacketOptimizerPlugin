@@ -6,7 +6,7 @@
 
     <groupId>RyuZUPacketOptimizer</groupId>
     <artifactId>RyuZUPacketOptimizer</artifactId>
-    <version>6.2.0</version>
+    <version>6.4.1</version>
     <packaging>jar</packaging>
 
     <name>RyuZUPacketOptimizer</name>
