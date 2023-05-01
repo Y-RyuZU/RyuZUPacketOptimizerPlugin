@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,8 @@ import java.util.*;
 
 public class OriginalParticleBuilder extends ParticleBuilder {
     public static final List<Particle> originalparticles = Arrays.asList(Particle.FLASH, Particle.FLAME, Particle.END_ROD, Particle.COMPOSTER, Particle.CRIT, Particle.FIREWORKS_SPARK);
+//    private Location origin;
+//    private static final Map<Location, List<Player>> targetsMap = new HashMap<>();
 
     public OriginalParticleBuilder(@NotNull Particle particle) {
         super(particle);
@@ -49,11 +52,10 @@ public class OriginalParticleBuilder extends ParticleBuilder {
             for (Player p : usingPlayers)
                 PacketOptimizer.optimize(id, location().getX(), location().getY(), location().getZ(), (float) offsetX(), (float) offsetY(), (float) offsetZ(), (float) extra(), count(), particle(), data(), p);
         }
-        var builder = particle().builder().location(location()).source(source()).count(count()).extra(extra()).receivers(notUsingPlayers).offset(offsetX(), offsetY(), offsetZ());
-        if(hasData && !original)
-            builder.data(data()).spawn();
-        else
-            builder.spawn();
+        location().getWorld().spawnParticle(particle(), receivers(), source(),
+                                          location().getX(), location().getY(), location().getZ(),
+                                          count(), offsetX(), offsetY(), offsetZ(), extra(), original ? null : data(), force()
+        );
 //        location().getWorld().spawnParticle(
 //                particle(), players, source(),
 //                location().getX(), location().getY(), location().getZ(),
@@ -74,4 +76,24 @@ public class OriginalParticleBuilder extends ParticleBuilder {
 
         return data(new Particle.DustOptions(color, size));
     }
+
+//    @NotNull
+//    public ParticleBuilder location(@NotNull Location location) {
+//        super.location(location);
+//        if(origin == null) origin = location.clone();
+//        return this;
+//    }
+//
+//    @NotNull
+//    public ParticleBuilder location(@NotNull World world, double x, double y, double z) {
+//        Location location = new Location(world, x, y, z);
+//        super.location(location);
+//        if(origin == null) origin = location.clone();
+//        return this;
+//    }
+//
+//    @Nullable
+//    public Location origin() {
+//        return origin;
+//    }
 }
