@@ -52,15 +52,10 @@ public class OriginalParticleBuilder extends ParticleBuilder {
             for (Player p : usingPlayers)
                 PacketOptimizer.optimize(id, location().getX(), location().getY(), location().getZ(), (float) offsetX(), (float) offsetY(), (float) offsetZ(), (float) extra(), count(), particle(), data(), p);
         }
-        location().getWorld().spawnParticle(particle(), receivers(), source(),
+        location().getWorld().spawnParticle(particle(), notUsingPlayers, source(),
                                           location().getX(), location().getY(), location().getZ(),
                                           count(), offsetX(), offsetY(), offsetZ(), extra(), original ? null : data(), force()
         );
-//        location().getWorld().spawnParticle(
-//                particle(), players, source(),
-//                location().getX(), location().getY(), location().getZ(),
-//                count(), offsetX(), offsetY(), offsetZ(), extra(), data(), true
-//        );
         return this;
     }
 
