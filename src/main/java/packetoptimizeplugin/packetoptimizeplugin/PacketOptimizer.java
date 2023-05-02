@@ -1,7 +1,9 @@
 package packetoptimizeplugin.packetoptimizeplugin;
 
 import com.comphenix.protocol.wrappers.WrappedBlockData;
+import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import packetoptimizeplugin.packetoptimizeplugin.Packets.ParticlePackets.Force.ParticleForceColorPacket;
@@ -90,9 +92,12 @@ public class PacketOptimizer {
                 }
             }
             case BLOCK_CRACK -> {
-                WrappedBlockData block = (WrappedBlockData) data;
-                int blockid = ParticleTypes.MaterialTypes.valueOf(block.getType().toString()).getId();
-                int blockdata = block.getData();
+//                WrappedBlockData block = (WrappedBlockData) data;
+//                int blockid = ParticleTypes.MaterialTypes.valueOf(block.getType().toString()).getId();
+//                int blockdata = block.getData();
+                BlockData block = (BlockData) data;
+                int blockid = ParticleTypes.MaterialTypes.valueOf(block.getMaterial().name()).getId();
+                int blockdata = block.getMaterial().getMaxStackSize();
                 if (offx != 0 || offy != 0 || offz != 0) {
                     for (ParticleBasePacket base : packets) {
                         if (base.getClass().toString().equals(ParticleOffsetBlockPacket.class.toString())) {
@@ -133,9 +138,12 @@ public class PacketOptimizer {
                 }
             }
             case FALLING_DUST -> {
-                WrappedBlockData fallingdust = (WrappedBlockData) data;
-                int fallingdustid = ParticleTypes.MaterialTypes.valueOf(fallingdust.getType().toString()).getId();
-                int fallingdustdata = fallingdust.getData();
+//                WrappedBlockData fallingdust = (WrappedBlockData) data;
+//                int fallingdustid = ParticleTypes.MaterialTypes.valueOf(fallingdust.getType().toString()).getId();
+//                int fallingdustdata = fallingdust.getData();
+                BlockData fallingdust = (BlockData) data;
+                int fallingdustid = ParticleTypes.MaterialTypes.valueOf(fallingdust.getMaterial().name()).getId();
+                int fallingdustdata = fallingdust.getMaterial().getMaxStackSize();
                 if (offx != 0 || offy != 0 || offz != 0) {
                     for (ParticleBasePacket base : packets) {
                         if (base.getClass().toString().equals(ParticleOffsetFallingDustPacket.class.toString())) {
